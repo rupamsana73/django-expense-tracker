@@ -1,0 +1,110 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+
+<!-- HEADER -->
+<div class="page-header">
+  <h2 class="page-title">All Transactions</h2>
+
+ 
+</div>
+
+<!-- TOP GRID -->
+<div class="top-grid">
+
+  <!-- LEFT : CHART -->
+  <div class="card chart">
+    <p class="chart-title">Income vs Expenses</p>
+    <canvas id="incomeExpenseChart"></canvas>
+  </div>
+
+  <!-- RIGHT : HISTORY -->
+  <div class="card history">
+    <h3>Recent History</h3>
+
+    {% for exp in recent_expenses %}
+      <div class="history-item expense">
+        <span>{{ exp.title }}</span>
+        <span class="debit">− ₹{{ exp.amount }}</span>
+      </div>
+    {% endfor %}
+
+    {% for inc in recent_incomes %}
+      <div class="history-item income">
+        <span>{{ inc.title }}</span>
+        <span class="credit">+ ₹{{ inc.amount }}</span>
+      </div>
+    {% endfor %}
+
+    {% if not recent_expenses and not recent_incomes %}
+      <p class="empty">No transactions yet</p>
+    {% endif %}
+  </div>
+
+</div>
+
+<!-- TOTALS -->
+<div class="totals-grid">
+  <div class="card total income">
+    <p>Total Income</p>
+    <h2>₹{{ total_income }}</h2>
+  </div>
+
+  <div class="card total expense">
+    <p>Total Expenses</p>
+    <h2>₹{{ total_expense }}</h2>
+  </div>
+</div>
+
+<!-- BALANCE -->
+<div class="card balance">
+  <p>Total Balance</p>
+  <h1>₹{{ balance }}</h1>
+</div>
+
+<!-- CHART DATA (SAFE) -->
+{{ chart_labels|json_script:"labels-data" }}
+{{ income_amounts|json_script:"income-data" }}
+{{ expense_amounts|json_script:"expense-data" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const labels = JSON.parse('{{ chart_labels|escapejs }}');
+const incomeAmounts = JSON.parse('{{ income_amounts|escapejs }}');
+const expenseAmounts = JSON.parse('{{ expense_amounts|escapejs }}');
+
+new Chart(document.getElementById('incomeExpenseChart'), {
+  type: 'line',
+  data: {
+    labels: labels,
+    datasets: [
+      {
+        label: 'Income',
+        data: incomeAmounts,
+        borderColor: '#4caf50',
+        tension: 0.4
+      },
+      {
+        label: 'Expenses',
+        data: expenseAmounts,
+        borderColor: '#e53935',
+        tension: 0.4
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+});
+</script>
+
+  <a href="/dashboard/export/" class="export-btn">
+      ⬇ Download Excel
+    </a>
+
+{% endblock %}

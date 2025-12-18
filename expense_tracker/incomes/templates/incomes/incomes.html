@@ -1,0 +1,38 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+
+<h2 class="page-title">Incomes</h2>
+
+<div class="income-grid">
+
+  <!-- ADD FORM -->
+  <div class="card">
+    <h3>Add Income</h3>
+
+    <form method="post">
+      {% csrf_token %}
+      <input type="text" name="title" placeholder="Income Title" required>
+      <input type="number" name="amount" placeholder="Amount" required>
+      <button type="submit">Add Income</button>
+    </form>
+  </div>
+
+  <!-- INCOME LIST -->
+  <div class="card">
+    <h3>Income History</h3>
+
+   {% for income in incomes %}
+  <div class="history-item income">
+    <span>{{ income.title }}</span>
+    <span>
+      +₹{{ income.amount }}
+      <a href="/incomes/delete/{{ income.id }}/" class="delete-btn">✖</a>
+    </span>
+  </div>
+{% endfor %}
+
+  </div>
+
+</div>
+
+{% endblock %}

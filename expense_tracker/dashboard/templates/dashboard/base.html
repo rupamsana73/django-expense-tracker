@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="{% static 'dashboard/dashboard.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<script>
+  function toggleSidebar(){
+    document.getElementById("sidebar").classList.toggle("show");
+  }
+</script>
+
+<body>
+
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+ <aside class="sidebar" id="sidebar">
+    
+<div class="profile">
+
+ <div class="avatar">
+  {{ request.user.username|slice:":1"|upper }}
+</div>
+
+<h3>{{ request.user.username }}</h3>
+<p>Your Money</p>
+<h4 style="margin-top:5px;">₹ {{ balance }}</h4>
+
+</div>
+
+
+<ul class="menu">
+  <li class="{% if request.path == '/dashboard/' %}active{% endif %}">
+    <a href="/dashboard/">Dashboard</a>
+  </li>
+
+  <li class="{% if request.path == '/incomes/' %}active{% endif %}">
+    <a href="/incomes/">Incomes</a>
+  </li>
+
+  <li class="{% if request.path == '/expenses/' %}active{% endif %}">
+    <a href="/expenses/">Expenses</a>
+  </li>
+</ul>
+
+
+        <div class="logout">
+  <a href="/logout/">Sign Out</a>
+</div>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</div>
+
+</body>
+</html>

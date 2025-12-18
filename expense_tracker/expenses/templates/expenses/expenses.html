@@ -1,0 +1,39 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+
+<h2 class="page-title">Expenses</h2>
+
+<div class="income-grid">
+
+  <!-- ADD EXPENSE -->
+  <div class="card">
+    <h3>Add Expense</h3>
+
+    <form method="post">
+      {% csrf_token %}
+      <input type="text" name="title" placeholder="Expense Title" required>
+      <input type="number" name="amount" placeholder="Amount" required>
+      <button type="submit" class="expense-btn">Add Expense</button>
+    </form>
+  </div>
+
+  <!-- EXPENSE LIST -->
+  <div class="card">
+    <h3>Expense History</h3>
+
+    {% for expense in expenses %}
+      <div class="history-item expense">
+        <span>{{ expense.title }}</span>
+        <span>
+          -₹{{ expense.amount }}
+          <a href="/expenses/delete/{{ expense.id }}/" class="delete-btn">✖</a>
+        </span>
+      </div>
+    {% empty %}
+      <p class="empty">No expenses added yet</p>
+    {% endfor %}
+  </div>
+
+</div>
+
+{% endblock %}
